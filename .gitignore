@@ -1,1 +1,6 @@
-models/
+models/*.pkl
+.venv
+__pycache__
+.env.local
+docs
+data
