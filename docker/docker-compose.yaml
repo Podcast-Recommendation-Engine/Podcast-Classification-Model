@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: mlflow-postgres
+    networks:
+      - mlflow-net
+    environment:
+      POSTGRES_USER: mlflow
+      POSTGRES_PASSWORD: mlflow
+      POSTGRES_DB: mlflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mlflow:
+    image: ubuntu/mlflow:2.1.1_1.0-22.04
+    container_name: mlflow-server
+    depends_on:
+      - postgres
+    networks:
+      - mlflow-net
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql://mlflow:mlflow@postgres:5432/mlflow
+      MLFLOW_DEFAULT_ARTIFACT_ROOT: /mlflow/artifacts
+    volumes:
+      - mlflow_artifacts:/mlflow/artifacts
+    command: >
+      mlflow server
+      --backend-store-uri ${MLFLOW_BACKEND_STORE_URI}
+      --default-artifact-root ${MLFLOW_DEFAULT_ARTIFACT_ROOT}
+      --host 0.0.0.0
+      --port 5000
+
+networks:
+  mlflow-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mlflow_artifacts:
