@@ -3,4 +3,6 @@ models/*.pkl
 __pycache__
 .env.local
 docs
-data
+data/raw
+data/interim
+data/augmented
