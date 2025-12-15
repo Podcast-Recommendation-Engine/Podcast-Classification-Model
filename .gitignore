@@ -6,3 +6,5 @@ docs
 data/raw
 data/interim
 data/augmented
+mlruns/
+mlartifacts/
