@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mlflow"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,21 +29,23 @@ services:
     networks:
       - mlflow-net
     ports:
-      - "5000:5000"
+      - "${MLFLOW_PORT}:${MLFLOW_PORT}"
+    env_file:
+      - ../.env
     environment:
       - GUNICORN_CMD_ARGS=--timeout 60
     volumes:
       - mlflow_artifacts:/mlflow/artifacts
     command: >
       server
-      --backend-store-uri postgresql://mlflow:mlflow@postgres:5432/mlflow
+      --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       --default-artifact-root /mlflow/artifacts
       --host 0.0.0.0
-      --port 5000
+      --port ${MLFLOW_PORT}
       --serve-artifacts
       --allowed-hosts "*"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${MLFLOW_PORT}/health"]
       interval: 10s
       timeout: 5s
       retries: 5

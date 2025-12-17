@@ -41,7 +41,6 @@ def main():
 
     verbose_log("Training completed!")
 
-
 if __name__ == "__main__":
     setup_common_logger()
     main()
