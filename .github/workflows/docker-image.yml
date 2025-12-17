@@ -19,7 +19,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB }}
 
     - name: Build Docker image
-      run: docker build -t ibrahimghali/podcast-classification-code:latest -f docker/podcast-classifier .
+      run: docker build -t ibrahimghali/podcast-classification-code:latest -f docker/podcast.classifier .
 
     - name: Push Docker image
-      run: docker push ibrahimghali/podcast-classification-code:latest
+      run: docker push ibrahimghali/podcast-classification:latest
