@@ -1,10 +1,11 @@
 models/
 .venv
 __pycache__
-.env.local
+
 docs
 data/raw
 data/interim
 data/augmented
 mlruns/
 mlartifacts/
+.env

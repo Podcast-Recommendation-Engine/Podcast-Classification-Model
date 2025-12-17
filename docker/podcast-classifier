@@ -3,7 +3,10 @@ FROM python:3.13-slim
 
 WORKDIR /app
 COPY pyproject.toml .
-RUN pip install .
+RUN pip install . && rm -rf *.egg-info build
 COPY src/ src/
+
+# # Silence Git warning
+ENV GIT_PYTHON_REFRESH=quiet
 
 CMD ["python", "src/main.py"]

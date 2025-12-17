@@ -8,10 +8,8 @@ services:
       - mlflow-net
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: mlflow
-      POSTGRES_PASSWORD: mlflow
-      POSTGRES_DB: mlflow
+    env_file:
+      - ../.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -54,16 +52,15 @@ services:
   podcast-classifier:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/podcast-classifier
     container_name: podcast-classifier
     depends_on:
       mlflow:
         condition: service_healthy
     networks:
       - mlflow-net
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-      - PYTHONUNBUFFERED=1
+    env_file:
+      - ../.env
     volumes:
       - ../data/annotated:/app/data/annotated
       - ../models:/app/models
