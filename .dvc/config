@@ -1,1 +1,4 @@
-
+[core]
+    remote = teama
+['remote "teama"']
+    url = ssh://ibrahim@51.254.128.156:/srv/teamA
