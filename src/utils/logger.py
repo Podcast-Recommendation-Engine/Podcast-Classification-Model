@@ -1,9 +1,10 @@
 import logging
 import time
-
 import mlflow
 from mlflow.tracking import MlflowClient
-import requests
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
 
 def setup_common_logger():
     logging.getLogger(__name__)
@@ -13,7 +14,7 @@ def setup_common_logger():
         datefmt="%Y-%m-%d %H:%M:%S"
     )
     logging.Formatter.converter = time.gmtime
-    
+
 
 
 def verbose_log(msg: str):
@@ -22,14 +23,3 @@ def verbose_log(msg: str):
     logging.info("="*80)
 
 
-
-
-def check_mlflow_connection(uri):
-    try:
-        mlflow.set_tracking_uri(uri)
-        client = MlflowClient()
-        client.search_experiments()
-        return True
-    except Exception as e:
-        logging.error(f"MLflow connection failed: {e}")
-        return False
