@@ -6,33 +6,67 @@ services:
     container_name: mlflow-postgres
     networks:
       - mlflow-net
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: mlflow
       POSTGRES_PASSWORD: mlflow
       POSTGRES_DB: mlflow
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mlflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   mlflow:
-    image: ubuntu/mlflow:2.1.1_1.0-22.04
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.mlflow
     container_name: mlflow-server
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - mlflow-net
     ports:
       - "5000:5000"
     environment:
-      MLFLOW_BACKEND_STORE_URI: postgresql://mlflow:mlflow@postgres:5432/mlflow
-      MLFLOW_DEFAULT_ARTIFACT_ROOT: /mlflow/artifacts
+      - GUNICORN_CMD_ARGS=--timeout 60
     volumes:
       - mlflow_artifacts:/mlflow/artifacts
     command: >
-      mlflow server
-      --backend-store-uri ${MLFLOW_BACKEND_STORE_URI}
-      --default-artifact-root ${MLFLOW_DEFAULT_ARTIFACT_ROOT}
+      server
+      --backend-store-uri postgresql://mlflow:mlflow@postgres:5432/mlflow
+      --default-artifact-root /mlflow/artifacts
       --host 0.0.0.0
       --port 5000
+      --serve-artifacts
+      --allowed-hosts "*"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  podcast-classifier:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: podcast-classifier
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    networks:
+      - mlflow-net
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ../data/annotated:/app/data/annotated
+      - ../models:/app/models
 
 networks:
   mlflow-net:
