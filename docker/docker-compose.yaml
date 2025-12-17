@@ -52,7 +52,7 @@ services:
   podcast-classifier:
     build:
       context: ..
-      dockerfile: docker/podcast-classifier
+      dockerfile: docker/podcast.classifier
     container_name: podcast-classifier
     depends_on:
       mlflow:
@@ -63,7 +63,7 @@ services:
       - ../.env
     volumes:
       - ../data/annotated:/app/data/annotated
-      - ../models:/app/models
+      # - ../models:/app/models
 
 networks:
   mlflow-net:
