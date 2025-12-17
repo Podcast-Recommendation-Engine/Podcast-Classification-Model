@@ -37,7 +37,7 @@ def main():
     tuned_models, tuned_run_ids= run_tuning_model(baseline_models, X_train, y_train, TUNING_SCORING, RANDOM_STATE, TUNING_CROSS_VALIDATION_FOLDS)
     test_results= evaluate_test_set(EVALUATING_TEST_SET, tuned_models, X_train, X_test, y_test)
     
-    register_best_model(test_results, tuned_run_ids)
+    register_best_model(test_results, tuned_run_ids, X_train)
 
     verbose_log("Training completed!")
 
