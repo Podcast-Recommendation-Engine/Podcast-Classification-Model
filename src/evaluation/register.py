@@ -24,6 +24,24 @@ def register_best_model(test_results, tuned_run_ids, X_train):
     model_uri = f"runs:/{best_run_id}/model"
     registered_model_name = "podcast-kid-friendly-classifier"
     
+    # First, check if the model artifacts exist in the run
+    verbose_log(f"Checking if model artifacts exist in run {best_run_id}...")
+    artifacts_exist = False
+    try:
+        run = client.get_run(best_run_id)
+        artifacts = client.list_artifacts(best_run_id, path="model")
+        if artifacts:
+            verbose_log(f"Model artifacts found in run {best_run_id}")
+            artifacts_exist = True
+        else:
+            verbose_log(f"WARNING: No model artifacts found in run {best_run_id}")
+    except Exception as e:
+        verbose_log(f"ERROR: Cannot access run {best_run_id}: {str(e)}")
+        raise
+    
+    if not artifacts_exist:
+        raise ValueError(f"Model artifacts not found in run {best_run_id}. Cannot register model.")
+    
     # Check if this run is already registered
     model_already_registered = False
     try:
