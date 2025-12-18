@@ -17,5 +17,3 @@ predictions = model.predict(test_texts)
 for text, pred in zip(test_texts, predictions):
     label = "Kid-Friendly" if pred == 1 else "Not Kid-Friendly"
     print(f"Text: {text}\nPrediction: {label}\n")
-
-# This commit is for mohamed
