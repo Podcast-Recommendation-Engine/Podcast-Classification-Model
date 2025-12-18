@@ -1,4 +1,5 @@
 import logging
+import time
 import mlflow
 from config.mlflow import ANNOTATED_DATA_PATH, EVALUATING_TEST_SET, EXPERIMENT_NAME, MLFLOW_TRACKING_URI
 from config.model import RANDOM_STATE, TFIDF_MAX_DF, TFIDF_MIN_DF, TUNING_CROSS_VALIDATION_FOLDS, TUNING_SCORING
@@ -23,6 +24,7 @@ def main():
     verbose_log(f"MLflow connected: {MLFLOW_TRACKING_URI}")
     
     verbose_log("Loading data...")
+    time.sleep(300)
     data = load_data(ANNOTATED_DATA_PATH)
     verbose_log(f"Loaded {len(data)} examples")
     
