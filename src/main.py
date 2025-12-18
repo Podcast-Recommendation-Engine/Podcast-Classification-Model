@@ -24,7 +24,6 @@ def main():
     verbose_log(f"MLflow connected: {MLFLOW_TRACKING_URI}")
     
     verbose_log("Loading data...")
-    time.sleep(300)
     data = load_data(ANNOTATED_DATA_PATH)
     verbose_log(f"Loaded {len(data)} examples")
     
