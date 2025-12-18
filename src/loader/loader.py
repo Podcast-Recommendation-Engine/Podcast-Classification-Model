@@ -1,4 +1,5 @@
 import logging
+import os
 from mlflow.sklearn import log_model
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -58,13 +59,38 @@ def load_models(mindf, maxdf):
 
 
 def load_data(path) -> pd.DataFrame:
+    # Print working directory information
+    current_dir = os.getcwd()
+    logging.info(f"Current working directory: {current_dir}")
+    print(f"📂 Current working directory: {current_dir}")
+    
+    # Get absolute path of the file
+    abs_path = os.path.abspath(path)
+    logging.info(f"Absolute path to data: {abs_path}")
+    print(f"📄 Absolute path to data: {abs_path}")
+    
+    # List contents of the directory containing the file
+    data_dir = os.path.dirname(abs_path)
+    if os.path.exists(data_dir):
+        logging.info(f"Contents of {data_dir}:")
+        print(f"\n📁 Contents of {data_dir}:")
+        for item in os.listdir(data_dir):
+            item_path = os.path.join(data_dir, item)
+            if os.path.isfile(item_path):
+                size = os.path.getsize(item_path)
+                print(f"   📄 {item} ({size:,} bytes)")
+            else:
+                print(f"   📁 {item}/")
+    
     logging.info(f"Reading CSV from: {path}")
+    print(f"\n🔄 Reading CSV from: {path}")
     df = pd.read_csv(path)
     logging.info(f"Creating keywords_text column...")
     df['keywords_text'] = df['keywords_clean'].apply(
         lambda x: ' '.join(eval(x)) if isinstance(x, str) else ' '.join(x)
     )
     logging.info(f"Data prepared: {len(df)} rows, {len(df.columns)} columns")
+    print(f"✅ Data prepared: {len(df)} rows, {len(df.columns)} columns\n")
     return df
 
 

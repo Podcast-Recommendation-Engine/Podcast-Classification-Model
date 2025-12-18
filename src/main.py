@@ -45,4 +45,3 @@ if __name__ == "__main__":
     setup_common_logger()
     main()
 
-# Test CI/CD pipeline using a push
