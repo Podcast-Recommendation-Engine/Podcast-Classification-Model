@@ -1,18 +1,22 @@
 import mlflow
+import pandas as pd
 
-# Set tracking URI
 mlflow.set_tracking_uri("http://localhost:5000")
 
-# Load production model
-model = mlflow.sklearn.load_model("models:/podcast-kid-friendly-classifier/Production")
+model_name = "podcast-kid-friendly-classifier"
 
-# Test with sample text
+# Load directly using models:/ URI (leverages caching better)
+model = mlflow.pyfunc.load_model(f"models:/{model_name}/Production")
+
 test_texts = [
     "kids children education learning",
     "violence crime murder adult"
 ]
 
-predictions = model.predict(test_texts)
+# Convert to DataFrame with the expected column name
+test_df = pd.DataFrame({"keywords_text": test_texts})
+
+predictions = model.predict(test_df)
 
 for text, pred in zip(test_texts, predictions):
     label = "Kid-Friendly" if pred == 1 else "Not Kid-Friendly"

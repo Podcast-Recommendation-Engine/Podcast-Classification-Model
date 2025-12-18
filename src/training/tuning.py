@@ -76,8 +76,10 @@ def run_tuning_model(baseline_models, X_train, Y_train, tuning_scoring, random_s
             mlflow.log_metric("best_cv_f1_score", best_score)
             mlflow.log_metric("n_combinations_tested", n_combinations)
             
-            # Log tuned model
-            mlflow.sklearn.log_model(best_model, "model")
+            # Log tuned model with input example
+            import pandas as pd
+            input_example = pd.DataFrame(X_train[:5]) if len(X_train) > 5 else pd.DataFrame(X_train)
+            mlflow.sklearn.log_model(best_model, artifact_path="model", input_example=input_example)
             
             tuned_models[model_name] = best_model
             tuned_run_ids[model_name] = run.info.run_id  # Save run ID

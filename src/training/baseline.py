@@ -56,8 +56,10 @@ def run_train_baseline_model(baseline_models, X_train, X_test, y_train, y_test):
             mlflow.log_metric("cv_recall", results['recall'])
             mlflow.log_metric("cv_f1_score", results['f1_score'])
             
-            # Log model
-            mlflow.sklearn.log_model(model, "model")
+            # Log model with input example
+            import pandas as pd
+            input_example = pd.DataFrame(X_train[:5]) if len(X_train) > 5 else pd.DataFrame(X_train)
+            mlflow.sklearn.log_model(model, artifact_path="model", input_example=input_example)
             
             baseline_results[model_name] = results
     return baseline_results
