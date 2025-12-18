@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 import logging
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV, ParameterGrid, StratifiedKFold
-
+from mlflow.models import infer_signature
 from utils.logger import verbose_log
 
 
@@ -79,7 +79,16 @@ def run_tuning_model(baseline_models, X_train, Y_train, tuning_scoring, random_s
             # Log tuned model with input example
             import pandas as pd
             input_example = pd.DataFrame(X_train[:5]) if len(X_train) > 5 else pd.DataFrame(X_train)
-            mlflow.sklearn.log_model(best_model, artifact_path="model", input_example=input_example)
+            predictions = best_model.predict(input_example)
+            signature = infer_signature(input_example, predictions)
+            
+            mlflow.sklearn.log_model(
+                sk_model=best_model,
+                artifact_path="model",
+                signature=signature,
+                input_example=input_example,
+                registered_model_name=f"{model_name}_tuned"
+            )
             
             tuned_models[model_name] = best_model
             tuned_run_ids[model_name] = run.info.run_id  # Save run ID
