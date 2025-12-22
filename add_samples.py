@@ -7,56 +7,57 @@ import re
 NUM_SAMPLES = 996 
 OUTPUT_FILE = r'c:\Users\Ibrahim\Documents\WORK\Faculty-Projects\5eme\Podcast-Classification\data\annotated\podcasts_annotated.csv'
 
-# --- NON-KIDS DATA POOLS ---
-adult_pools = [
+# --- KID-FRIENDLY DATA POOLS ---
+kids_pools = [
     {
-        "category": "Adult Comedy/Roast",
-        "templates": ["{host}'s Late Night Roast", "Unfiltered: {topic}", "The {topic} Hangover", "No Filter with {host}"],
-        "topic": ["Dating Disasters", "Office Grinds", "Bad Decisions", "Modern Life", "Social Media Fails"],
-        "host": ["Dave", "The Crew", "Sarah J.", "The Anonymous Comic"],
-        "base_keywords": ["comedy", "unfiltered", "mature", "humor", "sarcasm", "stories", "laugh"],
-        "kid_friendly": 0
+        "category": "Space & Science",
+        "templates": ["Why is the {item} {color}?", "Journey to {item}", "The {item} Discovery for Kids", "Exploring {item} with Science"],
+        "item": ["Mars", "The Moon", "Saturn's Rings", "The Sun", "Black Hole", "Milky Way", "Jupiter"],
+        "color": ["Red", "Blue", "Glowing", "Bright", "Huge"],
+        "base_keywords": ["science", "space", "astronomy", "education", "learning", "planets", "nasa"],
+        "kid_friendly": 1
     },
     {
-        "category": "Intense True Crime",
-        "templates": ["Autopsy of {victim}", "The {crime} Serial", "Cold Case: {victim}", "Evidence of {crime}"],
-        "victim": ["The Stranger", "The Night Stalker", "Room 402", "The Silent Witness"],
-        "crime": ["Murder", "Heist", "Abduction", "Conspiracy", "Betrayal"],
-        "base_keywords": ["crime", "mystery", "blood", "violence", "investigation", "forensics", "dark"],
-        "kid_friendly": 0
+        "category": "Animal Kingdom",
+        "templates": ["Meet the {adj} {animal}", "The Secret Language of {animal}s", "Life of a {adj} {animal}", "Amazing {animal} Facts"],
+        "adj": ["Brave", "Cuddly", "Speedy", "Giant", "Tiny", "Wild"],
+        "animal": ["Dolphin", "Elephant", "Penguin", "Lion", "Hamster", "Cheetah", "Whale"],
+        "base_keywords": ["animals", "nature", "zoology", "wildlife", "fun facts", "creatures"],
+        "kid_friendly": 1
     },
     {
-        "category": "Politics/Current Affairs",
-        "templates": ["The {region} Conflict", "{topic} Debate 2025", "Inside the {institution}", "The {topic} Crisis"],
-        "region": ["Middle East", "Balkans", "Global South", "European Union"],
-        "topic": ["Geopolitics", "Economic Collapse", "Tax Reform", "Military Spending", "Election Fraud"],
-        "institution": ["Pentagon", "Central Bank", "Senate", "White House"],
-        "base_keywords": ["politics", "government", "policy", "war", "economy", "debate", "analysis"],
-        "kid_friendly": 0
+        "category": "Fairy Tales & Myths",
+        "templates": ["The {hero} and the {creature}", "The Legend of the {adj} {place}", "A Story of {hero} in {place}", "The {adj} {creature}"],
+        "hero": ["Princess", "Knight", "Young Explorer", "Magic Cat", "Brave Boy"],
+        "creature": ["Dragon", "Unicorn", "Talking Tree", "Friendly Giant", "Phoenix"],
+        "adj": ["Golden", "Hidden", "Enchanted", "Lost", "Sparkling"],
+        "place": ["Castle", "Magic Mountain", "Crystal Cave", "Rainbow Forest"],
+        "base_keywords": ["stories", "fairy tale", "magic", "adventure", "imagination", "bedtime", "fantasy"],
+        "kid_friendly": 1
     },
     {
-        "category": "Mature Health/Psychology",
-        "templates": ["Dealing with {issue}", "The {issue} Addiction", "Therapy Sessions: {issue}", "Inside {issue}"],
-        "issue": ["Depression", "Trauma", "Toxic Relationships", "Substance Abuse", "Chronic Stress"],
-        "base_keywords": ["health", "psychology", "mental health", "therapy", "adult", "wellness", "struggle"],
-        "kid_friendly": 0
+        "category": "School & Learning",
+        "templates": ["Fun with {subject}", "Mastering {subject} for Kids", "{subject} Riddles", "The History of {subject} for Beginners"],
+        "subject": ["Math", "English", "History", "Painting", "Piano", "Coding", "Geography"],
+        "base_keywords": ["education", "school", "learning", "teacher", "student", "brain power", "knowledge"],
+        "kid_friendly": 1
     }
 ]
 
 generated_data = []
 
 for _ in range(NUM_SAMPLES):
-    pool = random.choice(adult_pools)
+    pool = random.choice(kids_pools)
     template = random.choice(pool["templates"])
     
-    # Extract placeholders like {topic} or {host}
+    # Extract keys like {item}, {adj}, {hero}, etc.
     keys_needed = re.findall(r'\{(.*?)\}', template)
     format_dict = {key: random.choice(pool[key]) for key in keys_needed}
     
     title = template.format(**format_dict)
     
     # Keyword generation logic
-    raw_keywords = list(set(pool["base_keywords"] + title.lower().replace(":", "").split()))
+    raw_keywords = list(set(pool["base_keywords"] + title.lower().replace("?", "").split()))
     clean_keywords = [w for w in raw_keywords if len(w) > 2]
     random.shuffle(clean_keywords)
     
@@ -70,7 +71,7 @@ for _ in range(NUM_SAMPLES):
     })
 
 # --- APPEND TO CSV ---
-df_adult = pd.DataFrame(generated_data)
-df_adult.to_csv(OUTPUT_FILE, mode='a', header=False, index=False)
+df_kids = pd.DataFrame(generated_data)
+df_kids.to_csv(OUTPUT_FILE, mode='a', header=False, index=False)
 
-print(f"Success! Added {NUM_SAMPLES} non-kid-friendly samples to your dataset.")
+print(f"Success! Added {NUM_SAMPLES} kid-friendly samples. Your dataset is now balanced and massive.")
