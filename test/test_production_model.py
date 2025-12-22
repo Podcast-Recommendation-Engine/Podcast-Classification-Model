@@ -23,7 +23,7 @@ if model_versions:
 
 
 test_texts = [
-    "violence "
+    "sex "
 ]
 
 # Convert to DataFrame with the expected column name
