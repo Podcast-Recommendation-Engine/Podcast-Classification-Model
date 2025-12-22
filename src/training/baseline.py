@@ -68,7 +68,7 @@ def run_train_baseline_model(baseline_models, X_train, X_test, y_train, y_test):
                 artifact_path="model",
                 signature=signature,
                 input_example=input_example,
-                registered_model_name=f"{model_name}_baseline"  # Optional: auto-register
+                registered_model_name=f"{model_name}_baseline"  
             )
             
             baseline_results[model_name] = results
