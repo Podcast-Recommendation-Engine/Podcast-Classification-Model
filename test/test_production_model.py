@@ -5,7 +5,6 @@ mlflow.set_tracking_uri("http://localhost:5000")
 
 model_name = "podcast-kid-friendly-classifier"
 
-# Load directly using models:/ URI (leverages caching better)
 model = mlflow.pyfunc.load_model(f"models:/{model_name}/Production")
 
 test_texts = [
