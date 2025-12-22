@@ -75,3 +75,4 @@ df_kids = pd.DataFrame(generated_data)
 df_kids.to_csv(OUTPUT_FILE, mode='a', header=False, index=False)
 
 print(f"Success! Added {NUM_SAMPLES} kid-friendly samples. Your dataset is now balanced and massive.")
+
